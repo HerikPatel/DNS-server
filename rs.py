@@ -5,30 +5,29 @@ rs_dns = {
     "kill.cs.rutgers.edu": ['182.48.3.2', 'A'],
     "mx.rutgers.edu": ['192.64.4.2', 'A'],
     "www.ibm.com": ['64.42.3.4', 'A'],
-    "www.google.com": ['8.6.4.2', 'A']
+    "www.google.com": ['8.6.4.2', 'A'],
+    "Error 404": ['localhost', 'NS']
 }
-y = "qtsdatacenter.aws.com"
-x = rs_dns.get(y)
 
 
 def check_DNS_table(domain_name):
     ip = 'localhost'
+    port = 2080  # Port number will be provided in command line interface this is temp
     rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_binding = (ip, 50007)
+    server_binding = (ip, port)
     rs.bind(server_binding)
     rs.listen(1)
     print("waiting for connection")
-    c, addr = rs.accept()
-    data_from_client = c.recv(100)
+    conn, addr = rs.accept()
+    data_from_client = conn.recv(100)
     if rs_dns.get(data_from_client):
         msg = "" + data_from_client + " " + \
             rs_dns[data_from_client][0]+" "+rs_dns[data_from_client][1]
     else:
-        msg = "Fail"
+        msg = "" + rs_dns['Error 404'][0]+" "+rs_dns['Error 404'][1]
     print(data_from_client)
-
-    c.send(msg.encode('utf-8'))
-    c.close()
+    conn.send(msg.encode('utf-8'))
+    conn.close()
 
 
 check_DNS_table("")
