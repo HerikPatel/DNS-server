@@ -31,4 +31,3 @@ def check_DNS_table(domain_name):
 
 
 check_DNS_table("")
-# if nothis in found what you have to do is to return the string with NS inital to client
