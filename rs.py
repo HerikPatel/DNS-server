@@ -14,8 +14,11 @@ def get_DNS_values():
             rs_DNS.update({domain_name: [ip_address, flag]})
         else:
             rs_DNS.update({"Error 404": [domain_name, flag]})
-
+    return rs_DNS
 #    print(rs_DNS)
+
+
+rs_dns = get_DNS_values()
 
 
 def check_DNS_table(domain_name):
@@ -42,5 +45,5 @@ def check_DNS_table(domain_name):
     conn.close()
 
 
-# check_DNS_table("")
-get_DNS_values()
+check_DNS_table("")
+# get_DNS_values()
