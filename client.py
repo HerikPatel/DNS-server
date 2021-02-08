@@ -17,7 +17,7 @@ def rs_server(port):  # Used to search domain in rs server
             data_from_server = ""
             data_from_server = client.recv(100)
             if "NS" in data_from_server:
-                print("Forward request to TS server")
+                print("Forward request to TS server") #Call the TS server here
             else:
                 resolved_file = open("temp.txt", "a")
                 resolved_file.write(data_from_server.decode('utf-8')+"\n")
