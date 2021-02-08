@@ -2,7 +2,7 @@ import socket
 import sys
 
 
-def rs_server(port):
+def rs_server(port):  # Used to search domain in rs server
     f = open("PROJI-HNS.txt", "r")
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect(('localhost', port))
@@ -17,9 +17,14 @@ def rs_server(port):
             data_from_server = client.recv(100)
             if "NS" in data_from_server:
                 print("Forward request to TS server")
+            else:
+                resolved_file = open("temp.txt", "a")
+                resolved_file.write(data_from_server.decode('utf-8')+"\n")
+                resolved_file.close()
             print(data_from_server.decode('utf-8'))
             msg = ""
     client.close()
+    f.close()
 
 
 if __name__ == "__main__":
