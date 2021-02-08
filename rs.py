@@ -1,8 +1,10 @@
 import socket
 import sys
 
+rs_port = int(sys.argv[1])
 
-def get_DNS_values():
+
+def get_DNS_values():  # Gets values of dns table and stores in dictonary
     rs_DNS = {}
     f = open("PROJI-DNSRS.txt", "r")
     for x in f:
@@ -15,16 +17,14 @@ def get_DNS_values():
         else:
             rs_DNS.update({"Error 404": [domain_name, flag]})
     return rs_DNS
-#    print(rs_DNS)
 
 
 rs_dns = get_DNS_values()
 
 
-def check_DNS_table(domain_name):
+def check_DNS_table(port):
 
     ip = 'localhost'
-    port = 28000  # Port number will be provided in command line interface this is temp
     rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_binding = (ip, port)
     rs.bind(server_binding)
@@ -45,5 +45,4 @@ def check_DNS_table(domain_name):
     conn.close()
 
 
-check_DNS_table("")
-# get_DNS_values()
+check_DNS_table(rs_port)
