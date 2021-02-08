@@ -8,6 +8,7 @@ def rs_server(port):  # Used to search domain in rs server
     client.connect(('localhost', port))
     for x in f:
         x = x.replace('\n', '')
+        x = x.replace('\r', '')
         x = x.lower()
         if x != "\n":
             msg = ""+x
