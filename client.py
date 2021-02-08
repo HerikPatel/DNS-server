@@ -1,8 +1,6 @@
 import socket
 import sys
 
-rs_port = int(sys.argv[1])
-
 
 def rs_server(port):
     f = open("PROJI-HNS.txt", "r")
@@ -24,4 +22,9 @@ def rs_server(port):
     client.close()
 
 
-rs_server(28000)
+if __name__ == "__main__":
+    if(len(sys.argv) != 4):
+        #rs_port = int(sys.argv[1])
+        rs_server(28000)
+    else:
+        print("Insufficent arguments")

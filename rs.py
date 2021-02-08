@@ -1,8 +1,6 @@
 import socket
 import sys
 
-rs_port = int(sys.argv[1])
-
 
 def get_DNS_values():  # Gets values of dns table and stores in dictonary
     rs_DNS = {}
@@ -19,10 +17,7 @@ def get_DNS_values():  # Gets values of dns table and stores in dictonary
     return rs_DNS
 
 
-rs_dns = get_DNS_values()
-
-
-def check_DNS_table(port):
+def check_DNS_table(port, rs_dns):
 
     ip = 'localhost'
     rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -45,4 +40,10 @@ def check_DNS_table(port):
     conn.close()
 
 
-check_DNS_table(rs_port)
+if __name__ == "__main__":
+    if(len(sys.argv) != 2):
+        #rs_port = int(sys.argv[1])
+        rs_dns = get_DNS_values()
+        check_DNS_table(28000, rs_dns)
+    else:
+        print("Insufficent arguments")
