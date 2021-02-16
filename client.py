@@ -12,7 +12,7 @@ def rs_server(port, host, tsPort):  # Used to search domain in rs server
         exit()
 
     if host.lower() == "localhost" :
-        client.connect('localhost', port)
+        client.connect(('localhost', port))
     else:
         host_addr = socket.gethostbyname(host)
         host_binding = (host_addr, port)
@@ -38,6 +38,7 @@ def rs_server(port, host, tsPort):  # Used to search domain in rs server
             ts_server(received, tsPort, x, resolved_file)
         else:
             resolved_file.write(received+"\n")
+    
     f.close()
     client.close()
     resolved_file.close()
@@ -53,7 +54,7 @@ def ts_server(msg, port, query, resolved_file):  # Used to search domain in ts s
     msgs = msg.split()
     host = msgs[0]
     if host.lower() == "localhost" :
-        client.connect('localhost', port)
+        client.connect(('localhost', port))
     else:
         host_addr = socket.gethostbyname(host)
         host_binding = (host_addr, port)
@@ -64,6 +65,7 @@ def ts_server(msg, port, query, resolved_file):  # Used to search domain in ts s
     data_from_server = client.recv(200)
     print("here ts")
     resolved_file.write(data_from_server.decode('utf-8')+"\n")
+    client.close()
     return
 
 if __name__ == "__main__":

@@ -31,15 +31,17 @@ def check_DNS_table(port, rs_dns, tsHost):
 
     print("waiting for connection") 
     conn, addr = rs.accept()
-    while True:
-        data_from_client = conn.recv(200)
-        query = data_from_client.decode('utf-8')
-        if query.lower() in rs_dns:
-            reply = rs_dns[query.lower()]
-        else:
-            reply = tsHost
-        conn.send(reply.encode('utf-8'))
-    conn.close()
+    try:
+        while True:
+            data_from_client = conn.recv(200)
+            query = data_from_client.decode('utf-8')
+            if query.lower() in rs_dns:
+                reply = rs_dns[query.lower()]
+            else:
+                reply = tsHost
+            conn.send(reply.encode('utf-8'))
+    except:
+        conn.close()
     return
 
 

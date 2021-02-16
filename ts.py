@@ -22,21 +22,23 @@ def check_DNS_table(port, ts_dns):
         exit()
     server_binding = ('', port)
     ts.bind(server_binding)
-    ts.listen(1)
+    #ts.listen(1)
 
     print("waiting for connection")
-    conn, addr = ts.accept()
-    while True:
+    #conn, addr = ts.accept()
+    while(True):
+        ts.listen(1) 
+        conn, addr = ts.accept()
         data_from_client = conn.recv(200)
         query = data_from_client.decode('utf-8')
         reply = ""
-        
         if query.lower() in ts_dns:
             reply = ts_dns[query.lower()]
         else:
             reply = str(query) + " - Error:HOST NOT FOUND" 
         conn.send(reply.encode('utf-8'))
-#    conn.close()
+        conn.close()
+    print("done at ts")
     return
 
 if __name__ == "__main__":
