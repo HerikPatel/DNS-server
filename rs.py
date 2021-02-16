@@ -5,45 +5,48 @@ import sys
 def get_DNS_values():  # Gets values of dns table and stores in dictonary
     rs_DNS = {}
     f = open("PROJI-DNSRS.txt", "r")
-    for x in f:
+    list = [x.rstrip('\r\n') for x in f]
+    for x in list:
         temparr = x.split()
-        domain_name = temparr[0]
-        ip_address = temparr[1]
-        flag = temparr[2]
-        if ip_address != '-':
-            rs_DNS.update({domain_name: [ip_address, flag]})
+        if temparr[2] == "NS":
+            tsHost = x #complete msg that will be sent back
         else:
-            rs_DNS.update({"Error 404": [domain_name, flag]})
-    return rs_DNS
+            rs_DNS[temparr[0].lower()] = x
+    print(rs_DNS)
+    print(tsHost)
+    return rs_DNS, tsHost
 
 
 # Connects with client and recives and sends data to the client
-def check_DNS_table(port, rs_dns):
-    ip = 'localhost'
-    rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_binding = (ip, port)
-    rs.bind(server_binding)
-    rs.listen(3)
-    print("waiting for connection")
-    conn, addr = rs.accept()
+def check_DNS_table(port, rs_dns, tsHost):
     try:
-        while True:
-            data_from_client = conn.recv(100)
-            if rs_dns.get(data_from_client):
-                msg = "" + data_from_client + " " + \
-                    rs_dns[data_from_client][0]+" "+rs_dns[data_from_client][1]
-            else:
-                msg = "" + rs_dns['Error 404'][0]+" "+rs_dns['Error 404'][1]
-            # print(data_from_client)
-            conn.send(msg.encode('utf-8'))
-    except:
-        conn.close()
+        rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print("[S]: Server socket created")
+    except socket.error as err:
+        print('socket open error: {}\n'.format(err))
+        exit()
+    server_binding = ('', port)
+    rs.bind(server_binding)
+    rs.listen(1)
+
+    print("waiting for connection") 
+    conn, addr = rs.accept()
+    while True:
+        data_from_client = conn.recv(200)
+        query = data_from_client.decode('utf-8')
+        if query.lower() in rs_dns:
+            reply = rs_dns[query.lower()]
+        else:
+            reply = tsHost
+        conn.send(reply.encode('utf-8'))
+    conn.close()
+    return
 
 
 if __name__ == "__main__":
-    if(len(sys.argv) != 2):
-        # rs_port = int(sys.argv[1])
-        rs_dns = get_DNS_values()
-        check_DNS_table(28000, rs_dns)
+    if(len(sys.argv) == 2):
+        rs_port = int(sys.argv[1])
+        rs_dns, tsHost = get_DNS_values()
+        check_DNS_table(rs_port, rs_dns, tsHost)
     else:
         print("Insufficent arguments")
