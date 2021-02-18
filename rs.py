@@ -12,8 +12,8 @@ def get_DNS_values():  # Gets values of dns table and stores in dictonary
             tsHost = x #complete msg that will be sent back
         else:
             rs_DNS[temparr[0].lower()] = x
-    print(rs_DNS)
-    print(tsHost)
+    #print(rs_DNS)
+    #print(tsHost)
     return rs_DNS, tsHost
 
 
@@ -21,27 +21,35 @@ def get_DNS_values():  # Gets values of dns table and stores in dictonary
 def check_DNS_table(port, rs_dns, tsHost):
     try:
         rs = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print("[S]: Server socket created")
+        #print("[S]: Server socket created")
     except socket.error as err:
-        print('socket open error: {}\n'.format(err))
+        print('Socket open error at RS: {}\n'.format(err))
         exit()
     server_binding = ('', port)
     rs.bind(server_binding)
     rs.listen(1)
-
-    print("waiting for connection") 
+    conn = None
+    print("Waiting for connection") 
     conn, addr = rs.accept()
-    try:
-        while True:
-            data_from_client = conn.recv(200)
-            query = data_from_client.decode('utf-8')
-            if query.lower() in rs_dns:
-                reply = rs_dns[query.lower()]
-            else:
-                reply = tsHost
-            conn.send(reply.encode('utf-8'))
-    except:
-        conn.close()
+    #if(conn!=None):
+        #print("not null")
+    #try:
+    while True:
+        data_from_client = conn.recv(200)
+        query = data_from_client.decode('utf-8')
+        if(query=="done"):
+            print("Closing connection")
+            conn.close()
+            return
+        if query.lower() in rs_dns:
+            reply = rs_dns[query.lower()]
+        else:
+            reply = tsHost
+        print(reply)
+        conn.send(reply.encode('utf-8'))
+    #except:
+        #print("Closing connection")
+        #conn.close()
     return
 
 
