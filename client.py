@@ -20,6 +20,15 @@ def rs_server(port, host, tsPort):  # Used to search domain in rs server
         client.connect(host_binding)
     f = open("PROJI-HNS.txt", "r")
     list = [x.rstrip('\r\n') for x in f]
+    if(list==[]):
+        print("PROJI-HNS.txt is empty, nothing to query")
+        print("Closing connection with server")
+        client.send("done".encode('utf-8'))
+        f.close()
+        client.close()
+        resolved_file.close()
+        #print("PROJI-HNS.txt is empty, nothing to query")
+        exit()
     for x in list:
 #        x = x.replace('\n', '')
         #x = x.replace('\r', '')
@@ -82,5 +91,6 @@ if __name__ == "__main__":
         tsPort = int(sys.argv[3])
     else:
         print("Insufficent arguments")
+        exit()
     rs_server(rsPort, rsHost, tsPort)
     print("Done: please check RESOLVED.txt for results")

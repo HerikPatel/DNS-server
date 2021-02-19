@@ -31,6 +31,15 @@ def check_DNS_table(port, ts_dns):
         conn, addr = ts.accept()
         data_from_client = conn.recv(200)
         query = data_from_client.decode('utf-8')
+        '''
+        if (ts_dns==[]):
+            print("PROJI-DNSTS.txt is empty")
+            print("Closing connection")
+            reply = str(query) + " - Error:HOST NOT FOUND"
+            conn.send(reply.encode('utf-8'))
+            conn.close()
+            exit()
+        '''
         if(query=="done"):
             print("Done with client, closing connection")
             conn.close()
@@ -52,3 +61,4 @@ if __name__ == "__main__":
         check_DNS_table(ts_port, ts_dns)
     else:
         print("Insufficent arguments")
+        exit()

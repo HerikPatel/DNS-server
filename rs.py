@@ -12,6 +12,8 @@ def get_DNS_values():  # Gets values of dns table and stores in dictonary
             tsHost = x #complete msg that will be sent back
         else:
             rs_DNS[temparr[0].lower()] = x
+    if(list==[]):
+        tsHost = ""
     #print(rs_DNS)
     #print(tsHost)
     return rs_DNS, tsHost
@@ -31,21 +33,24 @@ def check_DNS_table(port, rs_dns, tsHost):
     conn = None
     print("Waiting for connection") 
     conn, addr = rs.accept()
-    #if(conn!=None):
-        #print("not null")
-    #try:
     while True:
         data_from_client = conn.recv(200)
         query = data_from_client.decode('utf-8')
         if(query=="done"):
-            print("Closing connection")
+            print("Donewith client: Closing connection")
             conn.close()
-            return
-        if query.lower() in rs_dns:
+            exit()
+        reply = ""
+        if (rs_dns==[]):
+            print("PROJI-DNSRS.txt is empty")
+            print("Closing connection")
+            reply = str(query) + " - Error:HOST NOT FOUND"
+            #conn.send(reply.encode('utf-8'))
+        elif query.lower() in rs_dns:
             reply = rs_dns[query.lower()]
         else:
             reply = tsHost
-        print(reply)
+        #print(reply)
         conn.send(reply.encode('utf-8'))
     #except:
         #print("Closing connection")
@@ -60,3 +65,4 @@ if __name__ == "__main__":
         check_DNS_table(rs_port, rs_dns, tsHost)
     else:
         print("Insufficent arguments")
+        exit()
