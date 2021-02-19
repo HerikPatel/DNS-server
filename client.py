@@ -24,6 +24,7 @@ def rs_server(port, host, tsPort):  # Used to search domain in rs server
         print("PROJI-HNS.txt is empty, nothing to query")
         print("Closing connection with server")
         client.send("done".encode('utf-8'))
+        resolved_file.write("")
         f.close()
         client.close()
         resolved_file.close()
@@ -43,14 +44,17 @@ def rs_server(port, host, tsPort):  # Used to search domain in rs server
         data_from_server = client.recv(200)
         #print("here rs")
         received = data_from_server.decode('utf-8')
+        exists = 0
         if "NS" in received:
             #print("Forward request to TS server") #Call the TS server here
             tsHost = received
+            exists = 1
             ts_server(received, tsPort, x, resolved_file)
         else:
             resolved_file.write(received+"\n")
     client.send("done".encode('utf-8'))
-    ts_server(tsHost, tsPort, "done", resolved_file) 
+    if(exists==1):
+        ts_server(tsHost, tsPort, "done", resolved_file) 
     f.close()
     client.close()
     resolved_file.close()

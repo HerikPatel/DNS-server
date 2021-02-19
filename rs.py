@@ -41,7 +41,7 @@ def check_DNS_table(port, rs_dns, tsHost):
             conn.close()
             exit()
         reply = ""
-        if (rs_dns==[]):
+        if (rs_dns=={}):
             print("PROJI-DNSRS.txt is empty")
             print("Closing connection")
             reply = str(query) + " - Error:HOST NOT FOUND"
